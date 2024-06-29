@@ -24,7 +24,7 @@ public class HibernateConfigDbch1Read {
 	
 	
     @Bean(name = "dataSourceDbch1")
-    @ConfigurationProperties(prefix = "spring.second-datasource")
+    @ConfigurationProperties(prefix = "spring.datasource.write")
     public DataSource dataSourceDbch1() {
         return DataSourceBuilder.create().build();
     }

@@ -152,14 +152,44 @@
             </groupId>
             <artifactId>aws-sdk-java</artifactId>
             <version>2.21.5</version>
-        </dependency>
+        </dependency>        
+        
+       
+	
+<dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-maven-plugin</artifactId>
+    <version>8.5.13</version>
+</dependency>
+
 
 
     </dependencies>
 
 
     <build>
-        <plugins>
+        <plugins>       
+        
+        <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>8.5.13</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/pni</url>
+                    <user>pniuser</user>
+                    <password>root</password>
+                    <schemas>
+                        <schema>public</schema>
+                    </schemas>
+                    <locations>
+                        <location>classpath:db/migration</location>
+                    </locations>
+                </configuration>
+            </plugin>
+		 
+
+        
+        
             <plugin>
                 <groupId>
                     org.springframework.boot

@@ -21,7 +21,7 @@ public class HibernateConfigMssdbRead {
 
 	@Primary
 	@Bean(name = "dataSourceRead")
-	@ConfigurationProperties(prefix = "spring.datasource.read")
+	@ConfigurationProperties(prefix = "spring.datasource.write")
 	public DataSource dataSourceMssdb() {
 		return DataSourceBuilder.create().build();
 	}
