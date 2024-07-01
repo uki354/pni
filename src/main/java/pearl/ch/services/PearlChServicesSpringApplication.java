@@ -10,5 +10,6 @@ public class PearlChServicesSpringApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PearlChServicesSpringApplication.class, args);
-	}	
+	}
+	
 }
