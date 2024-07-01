@@ -65,7 +65,7 @@ jobs:
         
     - name: Log in to Azure CLI
       run: |
-         echo ${{ secrets.AZURE_PASS }} | az login -u ${{ secrets.AZURE_CLI_USERNAME }} --password-stdin
+          az login -u ${{ secrets.AZURE_CLI_USERNAME }} -p ${{ secrets.AZURE_CLI_PASS }}
 
     - name: Create Azure Container Instance
       run: |
