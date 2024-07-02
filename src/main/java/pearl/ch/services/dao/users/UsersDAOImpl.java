@@ -1,9 +1,11 @@
 package pearl.ch.services.dao.users;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -22,8 +24,6 @@ import pearl.ch.services.config.annotations.WriteTransactional;
 import pearl.ch.services.entity.dbch1.users.UsersDbch1;
 import pearl.ch.services.entity.mssdb.users.Roles;
 import pearl.ch.services.entity.mssdb.users.Users;
-import pearl.ch.services.entity.mssdb.users.UsersRoles;
-import pearl.ch.services.entity.mssdb.users.pk.UsersRolesPK;
 
 @Repository
 public class UsersDAOImpl implements UsersDAO {
@@ -129,15 +129,14 @@ public class UsersDAOImpl implements UsersDAO {
 
 			availableRoles = session
 					.createQuery("FROM Roles WHERE roles_id NOT IN "
-							+ "(SELECT roles_id FROM UsersRoles WHERE users_id = :userId)", Roles.class)
+							+ "(SELECT ur.roles_id FROM Users u JOIN u.roles ur WHERE u.users_id = :userId)", Roles.class)
 					.setParameter("userId", userId).getResultList();
+			
+			System.out.println(availableRoles);
 
 			jsonRespond.put("availableRoles", availableRoles);
 
-			assignedRoles = session
-					.createQuery("FROM Roles WHERE roles_id IN "
-							+ "(SELECT roles_id FROM UsersRoles WHERE users_id = :userId)", Roles.class)
-					.setParameter("userId", userId).getResultList();
+			assignedRoles = new ArrayList<>(selectedUser.getRoles());
 
 			jsonRespond.put("assignedRoles", assignedRoles);
 
@@ -157,20 +156,19 @@ public class UsersDAOImpl implements UsersDAO {
 
 		JSONObject jsonRespond = new JSONObject();
 		String response = "";
+		
 
 		try (Session session = entityManagerWrite.unwrap(Session.class);) {
+			
+			Users user = session.find(Users.class, userId);
 
 			for (int role : roles) {
+				Roles roleProxy = session.getReference(Roles.class, role);				
+				user.getRoles().add(roleProxy);
+			}			
+			
+			session.save(user);
 
-				UsersRoles userRole = new UsersRoles();
-
-				userRole.setUsers_id(userId);
-
-				userRole.setRoles_id(role);
-
-				session.save(userRole);
-
-			}
 
 			response = "true";
 			jsonRespond.put("response", response);
@@ -192,13 +190,18 @@ public class UsersDAOImpl implements UsersDAO {
 		JSONObject jsonRespond = new JSONObject();
 		String response = "";
 
-		try (Session session = entityManagerWrite.unwrap(Session.class);) {
 
-			for (int role : roles) {
-
-				UsersRoles userRole = session.get(UsersRoles.class, new UsersRolesPK(userId, role));
-				session.delete(userRole);
-			}
+		try (Session session = entityManagerWrite.unwrap(Session.class);) {			
+			
+			Users user = session.find(Users.class, userId);			
+			
+			Set<Roles> rolesToRemove = Arrays.stream(roles)
+                    .mapToObj(roleId -> session.getReference(Roles.class, roleId))
+                    .collect(Collectors.toSet());		
+			
+			user.getRoles().removeAll(rolesToRemove);			
+			
+			session.update(user);
 
 			response = "true";
 			jsonRespond.put("response", response);
@@ -283,27 +286,7 @@ public class UsersDAOImpl implements UsersDAO {
 
 		return jsonRespond;
 	}
-
-	@Override
-	@ReadTransactional
-	public boolean isAdmin(int userId) {
-		boolean isAdmin = false;
-		try {
-
-			UsersRoles adminRole = (UsersRoles) entityManager
-					.createQuery("FROM UsersRoles WHERE users_id = :usersId AND roles_id = 1")
-					.setParameter("usersId", userId).getSingleResult();
-
-			if (adminRole != null) {
-				isAdmin = true;
-			}
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-
-		}
-		return isAdmin;
-	}
+	
 	
 	
 

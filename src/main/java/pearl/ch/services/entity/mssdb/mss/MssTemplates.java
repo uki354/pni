@@ -10,9 +10,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
+import pearl.ch.services.entity.mssdb.mss.fillers.MSSFillers;
 import pearl.ch.services.enums.TemplateState;
 
 @Entity
@@ -57,8 +60,9 @@ public class MssTemplates implements Serializable {
 	@Column(name = "online_version_url")
 	private String online_version_url;
 
-	@Column(name = "filler_id")
-	private Integer filler_id;
+	@ManyToOne
+	@JoinColumn(name = "filler_id")
+	private MSSFillers filler;
 	
 	@Column(name = "state")
 	@Enumerated(EnumType.STRING)

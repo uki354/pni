@@ -29,7 +29,6 @@ import pearl.ch.services.config.constants.UnsubscribeEncryptionConfig;
 import pearl.ch.services.dto.mss.mssCore.DataForMail;
 import pearl.ch.services.entity.mssdb.mss.MssTemplates;
 import pearl.ch.services.entity.mssdb.mss.MssToSend;
-import pearl.ch.services.entity.mssdb.mss.fillers.MSSFillers;
 import pearl.ch.services.entity.mssdb.shops.Shops;
 import pearl.ch.services.service.client.ClientService;
 import pearl.ch.services.service.mss.email.EmailService;
@@ -66,7 +65,6 @@ public class CoreDAOImpl implements CoreDAO {
 			if (countEntriesToSend(templateId) == 0) {
 
 				MssTemplates template = session.get(MssTemplates.class, templateId);
-				MSSFillers filler = session.get(MSSFillers.class, template.getFiller_id());
 
 				ScrollableResults scrollableResults = sessionDbch1.createNativeQuery("WITH cte AS ( "
 						+ "SELECT *, ROW_NUMBER() OVER(PARTITION BY LOWER(c.email) ORDER BY COALESCE(c.upddate, c.crdate) DESC) AS row_num "
@@ -76,7 +74,7 @@ public class CoreDAOImpl implements CoreDAO {
 						+ "LOWER(COALESCE(c.email, f.email)) AS email, COALESCE(a.date_of_birth, '1970-01-01') AS date_of_birth, "
 						+ "0 AS state " + "FROM cte c "
 						+ "LEFT JOIN clients_additional_info a ON c.clients_id = a.clients_id "
-						+ "RIGHT JOIN (" + filler.getSql()	+ ") f ON LOWER(c.email) = LOWER(f.email) "
+						+ "RIGHT JOIN (" + template.getFiller().getSql()	+ ") f ON LOWER(c.email) = LOWER(f.email) "
 						+ "WHERE c.row_num = 1 OR c.row_num IS NULL ORDER BY RANDOM()").setReadOnly(true).setFetchSize(1000)
 						.setCacheable(false).scroll(ScrollMode.FORWARD_ONLY);
 

@@ -27,8 +27,6 @@ public interface UsersDAO {
 
 	JSONObject importNewUsers(int[] usersId);
 
-	boolean isAdmin(int userId);
-
 	String getUserEmailById(int id);
 
 }

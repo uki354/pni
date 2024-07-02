@@ -1,6 +1,7 @@
 package pearl.ch.services.service.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -62,7 +63,7 @@ public class UsersServiceImpl implements UsersService {
 
 	@Override
 	public boolean isAdmin() {
-		return usersDAO.isAdmin(getAuthenticatedUser());
+		return SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
 	}
 
 	@Override
