@@ -53,24 +53,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t singidunumpni.azurecr.io/pni:latest \
-          --build-arg DB_WRITE_USERNAME=${{ secrets.DB_WRITE_USERNAME }} \
-          --build-arg DB_WRITE_PASSWORD=${{ secrets.DB_WRITE_PASSWORD }} \
-          --build-arg EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }} \
-          --build-arg EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} \
-          --build-arg ACCESS_KEY_PEARL_S3_EXPORT=${{ secrets.ACCESS_KEY_PEARL_S3_EXPORT }} \
-          --build-arg SECRET_KEY_PEARL_S3_EXPORT=${{ secrets.SECRET_KEY_PEARL_S3_EXPORT }} \
-          --build-arg ACCESS_KEY_CASATIVO_S3_EXPORT=${{ secrets.ACCESS_KEY_CASATIVO_S3_EXPORT }} \
-          --build-arg SECRET_KEY_CASATIVO_S3_EXPORT=${{ secrets.SECRET_KEY_CASATIVO_S3_EXPORT }} \
-          --build-arg ACCESS_KEY_NATURA_S3_EXPORT=${{ secrets.ACCESS_KEY_NATURA_S3_EXPORT }} \
-          --build-arg SECRET_KEY_NATURA_S3_EXPORT=${{ secrets.SECRET_KEY_NATURA_S3_EXPORT }} \
-          --build-arg PEARL_UNSUBSCRIBE_TOKEN_ENCRYPTION_KEY=${{ secrets.PEARL_UNSUBSCRIBE_TOKEN_ENCRYPTION_KEY }} \
-          --build-arg PEARL_UNSUBSCRIBE_TOKEN_ENCRYPTION_IV=${{ secrets.PEARL_UNSUBSCRIBE_TOKEN_ENCRYPTION_IV }} \
-          --build-arg CASATIVO_UNSUBSCRIBE_TOKEN_ENCRYPTION_KEY=${{ secrets.CASATIVO_UNSUBSCRIBE_TOKEN_ENCRYPTION_KEY }} \
-          --build-arg CASATIVO_UNSUBSCRIBE_TOKEN_ENCRYPTION_IV=${{ secrets.CASATIVO_UNSUBSCRIBE_TOKEN_ENCRYPTION_IV }} \
-          --build-arg NATURA_UNSUBSCRIBE_TOKEN_ENCRYPTION_KEY=${{ secrets.NATURA_UNSUBSCRIBE_TOKEN_ENCRYPTION_KEY }} \
-          --build-arg NATURA_UNSUBSCRIBE_TOKEN_ENCRYPTION_IV=${{ secrets.NATURA_UNSUBSCRIBE_TOKEN_ENCRYPTION_IV }} \
-          .
+        docker build -t singidunumpni.azurecr.io/pni:latest .
 
     - name: Log in to Azure Container Registry
       run: |
